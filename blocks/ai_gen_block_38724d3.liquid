@@ -1,0 +1,188 @@
+{% doc %}
+  @prompt
+    Create a floating WhatsApp chat button for 2bros collection, fixed at the bottom-right of the screen on mobile and desktop. Use a recognizable white WhatsApp icon on a green circular button. Tapping it opens a small dismissible popup with 'Chat with us on WhatsApp' and a button that opens WhatsApp chat. Include editable settings for the WhatsApp number in international format, greeting, and prefilled message. Leave the phone number blank for the merchant to enter, and do not enable the chat link until a number is configured. Keep the button clear of cart controls and other mobile interface elements.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-whatsapp-{{ ai_gen_id }} {
+    display: block;
+    position: fixed;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(92px, calc(env(safe-area-inset-bottom) + 76px));
+    z-index: 9998;
+    width: auto;
+    max-width: calc(100vw - 40px);
+    font-family: inherit;
+  }
+  .ai-whatsapp-{{ ai_gen_id }}__toggle {
+    display: flex;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    border-radius: 50%;
+    color: #fff;
+    background: #075e3f;
+    box-shadow: 0 3px 12px rgba(0,0,0,.24);
+    cursor: pointer;
+  }
+  .ai-whatsapp-{{ ai_gen_id }}__toggle:hover { background: #064f36; }
+  .ai-whatsapp-{{ ai_gen_id }}__toggle:focus-visible,
+  .ai-whatsapp-{{ ai_gen_id }}__close:focus-visible,
+  .ai-whatsapp-{{ ai_gen_id }}__chat:focus-visible { outline: 3px solid #682c46; outline-offset: 3px; }
+  .ai-whatsapp-{{ ai_gen_id }}__toggle svg { width: 34px; height: 34px; fill: currentColor; }
+  .ai-whatsapp-{{ ai_gen_id }}__popup {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 14px);
+    width: min(320px, calc(100vw - 40px));
+    padding: 20px;
+    color: #682c46;
+    background: #fff2f5;
+    border: 1px solid #d8bb8a;
+    border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(30, 15, 22, .2);
+  }
+  .ai-whatsapp-{{ ai_gen_id }}__popup[hidden] { display: none; }
+  .ai-whatsapp-{{ ai_gen_id }}__heading { margin: 0 34px 14px 0; font-size: 18px; line-height: 1.35; font-weight: 600; }
+  .ai-whatsapp-{{ ai_gen_id }}__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    color: #682c46;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .ai-whatsapp-{{ ai_gen_id }}__chat {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 24px;
+    text-align: center;
+    color: #fff;
+    background: #075e3f;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .ai-whatsapp-{{ ai_gen_id }}__chat:hover { background: #064f36; }
+  .ai-whatsapp-{{ ai_gen_id }}__chat[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+  @media screen and (max-width: 749px) {
+    .ai-whatsapp-{{ ai_gen_id }} { right: max(16px, env(safe-area-inset-right)); bottom: max(108px, calc(env(safe-area-inset-bottom) + 88px)); }
+    .ai-whatsapp-{{ ai_gen_id }}__toggle { width: 56px; height: 56px; }
+  }
+{% endstyle %}
+
+<whatsapp-chat-{{ ai_gen_id }} class="ai-whatsapp-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-whatsapp-{{ ai_gen_id }}__popup" id="ai-whatsapp-popup-{{ ai_gen_id }}" role="dialog" aria-label="Chat with us on WhatsApp" hidden>
+    <button class="ai-whatsapp-{{ ai_gen_id }}__close" type="button" aria-label="Close chat popup">&times;</button>
+    <p class="ai-whatsapp-{{ ai_gen_id }}__heading">{{ block.settings.greeting | escape }}</p>
+    <a class="ai-whatsapp-{{ ai_gen_id }}__chat" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1">Chat on WhatsApp</a>
+  </div>
+  <button class="ai-whatsapp-{{ ai_gen_id }}__toggle" type="button" aria-label="Open WhatsApp chat" aria-expanded="false" aria-controls="ai-whatsapp-popup-{{ ai_gen_id }}">
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16.01 3.2A12.72 12.72 0 0 0 5.08 22.42L3.3 28.9l6.63-1.74A12.7 12.7 0 1 0 16.01 3.2Zm0 23.15c-2.02 0-4-.54-5.72-1.57l-.41-.24-3.94 1.03 1.05-3.83-.27-.42a10.4 10.4 0 1 1 9.29 5.03Zm5.71-7.79c-.31-.16-1.84-.91-2.12-1.01-.29-.11-.5-.16-.71.16-.21.31-.82 1.01-1.01 1.22-.18.21-.37.24-.68.08-.31-.16-1.31-.48-2.49-1.53-.92-.82-1.54-1.83-1.72-2.14-.18-.31-.02-.48.14-.64.14-.14.31-.37.47-.55.16-.18.21-.31.31-.52.11-.21.05-.39-.03-.55-.08-.16-.71-1.71-.97-2.34-.26-.61-.52-.53-.71-.54l-.6-.01c-.21 0-.55.08-.84.39-.29.31-1.1 1.07-1.1 2.62s1.13 3.04 1.29 3.25c.16.21 2.22 3.39 5.38 4.75.75.32 1.34.51 1.8.65.76.24 1.45.21 2 .13.61-.09 1.84-.75 2.1-1.48.26-.73.26-1.35.18-1.48-.08-.13-.29-.21-.6-.37Z"/></svg>
+  </button>
+</whatsapp-chat-{{ ai_gen_id }}>
+
+<script>
+  (() => {
+    const tagName = 'whatsapp-chat-{{ ai_gen_id }}';
+    if (customElements.get(tagName)) return;
+    class WhatsAppChat{{ ai_gen_id }} extends HTMLElement {
+      connectedCallback() {
+        this.toggle = this.querySelector('.ai-whatsapp-{{ ai_gen_id }}__toggle');
+        this.popup = this.querySelector('.ai-whatsapp-{{ ai_gen_id }}__popup');
+        this.closeButton = this.querySelector('.ai-whatsapp-{{ ai_gen_id }}__close');
+        this.chatLink = this.querySelector('.ai-whatsapp-{{ ai_gen_id }}__chat');
+        const number = '{{ block.settings.whatsapp_number | remove: ' ' | remove: '+' | remove: '-' | remove: '(' | remove: ')' | escape }}';
+        const message = {{ block.settings.prefilled_message | json }};
+        if (number && /^\d+$/.test(number)) {
+          this.chatLink.href = 'https://wa.me/' + number + (message ? '?text=' + encodeURIComponent(message) : '');
+          this.chatLink.removeAttribute('aria-disabled');
+          this.chatLink.removeAttribute('tabindex');
+        } else {
+          this.chatLink.addEventListener('click', (event) => event.preventDefault());
+        }
+        this.toggle.addEventListener('click', () => this.setOpen(this.popup.hidden));
+        this.closeButton.addEventListener('click', () => this.setOpen(false));
+        this.onOutsideClick = (event) => {
+          if (!this.contains(event.target)) this.setOpen(false);
+        };
+        document.addEventListener('click', this.onOutsideClick);
+        this.onKeydown = (event) => {
+          if (event.key === 'Escape' && !this.popup.hidden) {
+            this.setOpen(false);
+            this.toggle.focus();
+          }
+        };
+        this.addEventListener('keydown', this.onKeydown);
+      }
+      disconnectedCallback() {
+        document.removeEventListener('click', this.onOutsideClick);
+        this.removeEventListener('keydown', this.onKeydown);
+      }
+      setOpen(open) {
+        this.popup.hidden = !open;
+        this.toggle.setAttribute('aria-expanded', String(open));
+        if (open) this.closeButton.focus();
+      }
+    }
+    customElements.define(tagName, WhatsAppChat{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "WhatsApp chat button",
+  "settings": [
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number",
+      "info": "International format with country code, digits only."
+    },
+    {
+      "type": "text",
+      "id": "greeting",
+      "label": "Greeting",
+      "default": "Chat with us on WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "prefilled_message",
+      "label": "Prefilled message",
+      "default": "Hello, I have a question."
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "WhatsApp chat button"
+    }
+  ],
+  "tag": null,
+  "class": "whatsapp-chat-block"
+}
+{% endschema %}

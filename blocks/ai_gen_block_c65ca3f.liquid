@@ -1,0 +1,188 @@
+{% doc %}
+  @prompt
+    Create a premium, romantic, mobile-first fashion boutique homepage block for Bros Collection, integrated with the existing theme rather than a mockup. Palette: cherry blossom #F4A6C1, dusty rose #D98DA7, burgundy #702F49, plum #45243F, peach #FFC9B5, lavender #D9C8EE, champagne gold #D6B36A, creamy ivory #FFF5EF. Use tasteful gradients, editorial serif headings and readable body typography, strong contrast, generous spacing and restrained gold details, never childish. Include a full-height responsive fashion hero with an editable image picker for licensed photography of a stylish woman, exact headline YOUR STYLE. YOUR STORY. YOUR SPARKLE., subtitle Beautiful pieces for every mood and every moment, and DISCOVER YOUR NEXT LOOK button with editable real destination. Include New Arrivals, Shop by Category, Best Sellers, Fashion Editorial, Dresses & Outfits, and a future Jewellery & Accessories teaser mentioning necklaces, rings, chains and bracelets. Provide real collection pickers and image pickers; render real selected collection products with their own correct images, prices and links; never invent products, reviews, stock or links. Hide unconfigured shopping modules rather than show fake products or broken buttons. Jewellery teaser should say Coming soon without a dead shopping button. Preserve all existing product data, variants, sizes, inventory, cart, checkout and app integrations. Support genuine reviews through existing integrations only; optional WhatsApp link configurable with the merchant's actual number and hidden until configured. Add lightweight hero zoom/fade, staggered upward text reveals, scroll reveals, gentle product image zoom and second-image crossfade only when another image exists, button hover/lift and click feedback, and subtle decorative sparkles. Respect reduced motion, retain visible content without animation support, avoid scroll hijacking or navigation delays. Scope effects to this block; do not replace or interfere with existing navigation, checkout or global integrations. Use responsive optimized photography, lazy-load below-the-fold images, accessible focus states, semantic headings, descriptive links and mobile touch targets. All images, collections, copy, button links and animation settings must be editable. This is the homepage component of a broader redesign, not a replacement for product or collection templates. Preview and validate mobile and desktop behavior before saving; do not publish automatically.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-bros-home-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    color: {{ block.settings.text_color }};
+    background: {{ block.settings.page_color }};
+    overflow: hidden;
+    font-family: {{ settings.type_body_font.family }}, sans-serif;
+  }
+  .ai-bros-home-{{ ai_gen_id }} *,
+  .ai-bros-home-{{ ai_gen_id }} *::before,
+  .ai-bros-home-{{ ai_gen_id }} *::after { box-sizing: border-box; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-{{ ai_gen_id }} {
+    position: relative; min-height: 650px; height: min(92svh, 900px); width: 100%;
+    display: flex; align-items: center; background: linear-gradient(135deg, {{ block.settings.blush_color }}, {{ block.settings.ivory_color }} 70%);
+    isolation: isolate;
+  }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-media-{{ ai_gen_id }} { position:absolute; inset:0; z-index:-2; overflow:hidden; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-media-{{ ai_gen_id }} img { width:100%; height:100%; object-fit:cover; object-position:center 35%; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-media-{{ ai_gen_id }}::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(36,18,32,.72), rgba(36,18,32,.34) 56%, rgba(36,18,32,.05)); }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-copy-{{ ai_gen_id }} { width:min(100%, 1240px); margin:0 auto; padding:80px 7%; color:#fff; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-kicker-{{ ai_gen_id }} { color:{{ block.settings.gold_color }}; text-transform:uppercase; letter-spacing:.22em; font-size:12px; font-weight:600; margin:0 0 18px; }
+  .ai-bros-home-{{ ai_gen_id }} h1 { max-width:780px; margin:0; color:#fff; font-family:{{ settings.type_accent_font.family }}, Georgia, serif; font-size:clamp(42px, 8vw, 88px); line-height:.99; letter-spacing:-.035em; font-weight:500; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-subtitle-{{ ai_gen_id }} { max-width:470px; margin:24px 0 30px; font-size:clamp(16px,2vw,20px); line-height:1.65; color:#fff; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-button-{{ ai_gen_id }} { display:inline-flex; min-height:52px; padding:15px 24px; align-items:center; justify-content:center; gap:12px; background:{{ block.settings.burgundy_color }}; color:#fff; border:1px solid {{ block.settings.gold_color }}; border-radius:2px; text-transform:uppercase; letter-spacing:.12em; font-size:12px; font-weight:700; text-decoration:none; transition:transform .2s ease, background-color .2s ease; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-button-{{ ai_gen_id }}:hover { transform:translateY(-2px); background:{{ block.settings.plum_color }}; }
+  .ai-bros-home-{{ ai_gen_id }} a:focus-visible { outline:3px solid {{ block.settings.gold_color }}; outline-offset:4px; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-section-{{ ai_gen_id }} { width:100%; padding:76px max(5%, calc((100% - 1240px)/2)); }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-section--soft-{{ ai_gen_id }} { background:linear-gradient(135deg, {{ block.settings.ivory_color }}, {{ block.settings.lavender_color }} 150%); }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-section-heading-{{ ai_gen_id }} { margin:0 0 30px; text-align:center; color:{{ block.settings.plum_color }}; font-family:{{ settings.type_accent_font.family }}, Georgia, serif; font-size:clamp(30px,5vw,48px); line-height:1.12; font-weight:500; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-rule-{{ ai_gen_id }} { width:54px; height:1px; background:{{ block.settings.gold_color }}; margin:0 auto 32px; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-collection-link-{{ ai_gen_id }} { display:block; text-decoration:none; color:inherit; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-collection-grid-{{ ai_gen_id }} { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-collection-tile-{{ ai_gen_id }} { position:relative; aspect-ratio:4/5; overflow:hidden; background:{{ block.settings.blush_color }}; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-collection-tile-{{ ai_gen_id }} img { width:100%; height:100%; object-fit:cover; transition:transform .45s ease; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-collection-link-{{ ai_gen_id }}:hover img { transform:scale(1.035); }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-tile-title-{{ ai_gen_id }} { display:block; margin-top:14px; color:{{ block.settings.plum_color }}; font-family:{{ settings.type_accent_font.family }}, Georgia, serif; font-size:22px; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-grid-{{ ai_gen_id }} { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-card-{{ ai_gen_id }} { min-width:0; text-decoration:none; color:inherit; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-image-{{ ai_gen_id }} { position:relative; display:block; aspect-ratio:3/4; overflow:hidden; background:#f4e8e9; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-image-{{ ai_gen_id }} img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:opacity .35s ease, transform .4s ease; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-image-{{ ai_gen_id }} .ai-bros-secondary-{{ ai_gen_id }} { opacity:0; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-card-{{ ai_gen_id }}:hover .ai-bros-primary-{{ ai_gen_id }} { transform:scale(1.025); }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-card-{{ ai_gen_id }}:hover .ai-bros-secondary-{{ ai_gen_id }} { opacity:1; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-name-{{ ai_gen_id }} { display:block; margin:13px 0 5px; font-size:14px; line-height:1.45; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-price-{{ ai_gen_id }} { display:block; color:{{ block.settings.burgundy_color }}; font-size:14px; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-editorial-{{ ai_gen_id }} { display:grid; grid-template-columns:1.05fr .95fr; align-items:center; gap:7%; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-editorial-image-{{ ai_gen_id }} { aspect-ratio:4/5; overflow:hidden; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-editorial-image-{{ ai_gen_id }} img { width:100%; height:100%; object-fit:cover; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-editorial-copy-{{ ai_gen_id }} h2 { text-align:left; margin-bottom:20px; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-editorial-copy-{{ ai_gen_id }} p { line-height:1.8; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-teaser-{{ ai_gen_id }} { padding:60px 6%; text-align:center; background:linear-gradient(120deg, {{ block.settings.plum_color }}, {{ block.settings.burgundy_color }}); color:#fff; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-teaser-{{ ai_gen_id }} h2 { margin:0 0 12px; color:#fff; font-family:{{ settings.type_accent_font.family }}, Georgia, serif; font-size:clamp(30px,5vw,46px); font-weight:500; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-teaser-{{ ai_gen_id }} p { max-width:640px; margin:0 auto; line-height:1.75; }
+  .ai-bros-home-{{ ai_gen_id }} .ai-bros-whatsapp-{{ ai_gen_id }} { position:fixed; z-index:5; right:18px; bottom:18px; display:grid; place-items:center; width:54px; height:54px; border-radius:50%; background:#174c37; color:#fff; font-size:12px; font-weight:700; text-decoration:none; box-shadow:0 3px 14px rgba(0,0,0,.22); }
+  .ai-bros-home-{{ ai_gen_id }} [data-reveal] { opacity:1; transform:none; }
+  .ai-bros-home-{{ ai_gen_id }}.ai-bros-motion-{{ ai_gen_id }} [data-reveal] { opacity:0; transform:translateY(18px); transition:opacity .55s ease,transform .55s ease; }
+  .ai-bros-home-{{ ai_gen_id }}.ai-bros-motion-{{ ai_gen_id }} [data-reveal].is-visible { opacity:1; transform:translateY(0); }
+  .ai-bros-home-{{ ai_gen_id }}.ai-bros-motion-{{ ai_gen_id }} .ai-bros-hero-media-{{ ai_gen_id }} img { animation:ai-bros-hero-zoom-{{ ai_gen_id }} 1.2s ease both; }
+  @keyframes ai-bros-hero-zoom-{{ ai_gen_id }} { from { transform:scale(1.04); opacity:.75; } to { transform:scale(1); opacity:1; } }
+  @media(max-width:749px) {
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-{{ ai_gen_id }} { min-height:620px; height:84svh; }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-media-{{ ai_gen_id }}::after { background:linear-gradient(0deg,rgba(36,18,32,.78),rgba(36,18,32,.15) 100%); }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-hero-copy-{{ ai_gen_id }} { padding:70px 7%; align-self:flex-end; }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-section-{{ ai_gen_id }} { padding:52px 5%; }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-collection-grid-{{ ai_gen_id }} { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-product-grid-{{ ai_gen_id }} { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 12px; }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-editorial-{{ ai_gen_id }} { grid-template-columns:1fr; gap:25px; }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-editorial-image-{{ ai_gen_id }} { aspect-ratio:5/4; }
+    .ai-bros-home-{{ ai_gen_id }} .ai-bros-tile-title-{{ ai_gen_id }} { font-size:19px; }
+  }
+  @media(prefers-reduced-motion:reduce) {
+    .ai-bros-home-{{ ai_gen_id }} *, .ai-bros-home-{{ ai_gen_id }} *::before, .ai-bros-home-{{ ai_gen_id }} *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; }
+    .ai-bros-home-{{ ai_gen_id }}.ai-bros-motion-{{ ai_gen_id }} [data-reveal] { opacity:1; transform:none; }
+  }
+{% endstyle %}
+
+<bro-boutique-{{ ai_gen_id }} class="ai-bros-home-{{ ai_gen_id }}" style="width:{{ block.settings.desktop_width_percent }}%;" {{ block.shopify_attributes }}>
+  <section class="ai-bros-hero-{{ ai_gen_id }}" aria-label="Bros Collection fashion">
+    {% if block.settings.hero_image != blank %}<div class="ai-bros-hero-media-{{ ai_gen_id }}"><img src="{{ block.settings.hero_image | image_url: width: 2200 }}" srcset="{{ block.settings.hero_image | image_url: width: 750 }} 750w, {{ block.settings.hero_image | image_url: width: 1500 }} 1500w, {{ block.settings.hero_image | image_url: width: 2200 }} 2200w" sizes="100vw" alt="{{ block.settings.hero_image.alt | default: 'Fashion editorial portrait' | escape }}" fetchpriority="high" width="{{ block.settings.hero_image.width }}" height="{{ block.settings.hero_image.height }}"></div>{% endif %}
+    <div class="ai-bros-hero-copy-{{ ai_gen_id }}" data-reveal>
+      {% if block.settings.eyebrow != blank %}<p class="ai-bros-kicker-{{ ai_gen_id }}">{{ block.settings.eyebrow | escape }}</p>{% endif %}
+      <h1>{{ block.settings.hero_heading | escape }}</h1>
+      <p class="ai-bros-subtitle-{{ ai_gen_id }}">{{ block.settings.hero_subtitle | escape }}</p>
+      {% if block.settings.hero_link != blank %}<a class="ai-bros-button-{{ ai_gen_id }}" href="{{ block.settings.hero_link }}">{{ block.settings.hero_button | escape }} <span aria-hidden="true">→</span></a>{% endif %}
+    </div>
+  </section>
+
+  {% assign arrivals = block.settings.new_arrivals %}
+  {% if arrivals != blank and arrivals.products_count > 0 %}
+    <section class="ai-bros-section-{{ ai_gen_id }}" aria-labelledby="ai-bros-arrivals-title-{{ ai_gen_id }}"><h2 id="ai-bros-arrivals-title-{{ ai_gen_id }}" class="ai-bros-section-heading-{{ ai_gen_id }}" data-reveal>{{ block.settings.arrivals_heading | escape }}</h2><div class="ai-bros-rule-{{ ai_gen_id }}"></div><div class="ai-bros-product-grid-{{ ai_gen_id }}">
+      {% for product in arrivals.products limit: 4 %}<a class="ai-bros-product-card-{{ ai_gen_id }}" href="{{ product.url }}" aria-label="{{ product.title | escape }} — {{ product.price | money }}"><span class="ai-bros-product-image-{{ ai_gen_id }}">{% if product.featured_image %}<img class="ai-bros-primary-{{ ai_gen_id }}" src="{{ product.featured_image | image_url: width: 700 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}">{% endif %}{% if product.images.size > 1 %}<img class="ai-bros-secondary-{{ ai_gen_id }}" src="{{ product.images[1] | image_url: width: 700 }}" alt="{{ product.images[1].alt | default: product.title | escape }}" loading="lazy" width="{{ product.images[1].width }}" height="{{ product.images[1].height }}">{% endif %}</span><span class="ai-bros-product-name-{{ ai_gen_id }}">{{ product.title | escape }}</span><span class="ai-bros-price-{{ ai_gen_id }}">{{ product.price | money }}</span></a>{% endfor %}
+    </div></section>
+  {% endif %}
+
+  {% assign categories = block.settings.category_collections %}
+  {% if categories != blank and categories.size > 0 %}<section class="ai-bros-section-{{ ai_gen_id }} ai-bros-section--soft-{{ ai_gen_id }}" aria-labelledby="ai-bros-category-title-{{ ai_gen_id }}"><h2 id="ai-bros-category-title-{{ ai_gen_id }}" class="ai-bros-section-heading-{{ ai_gen_id }}" data-reveal>{{ block.settings.category_heading | escape }}</h2><div class="ai-bros-rule-{{ ai_gen_id }}"></div><div class="ai-bros-collection-grid-{{ ai_gen_id }}">{% for collection in categories limit: 3 %}{% if collection != blank %}<a class="ai-bros-collection-link-{{ ai_gen_id }}" href="{{ collection.url }}" aria-label="Shop {{ collection.title | escape }}"><span class="ai-bros-collection-tile-{{ ai_gen_id }}">{% if collection.image %}<img src="{{ collection.image | image_url: width: 900 }}" alt="{{ collection.image.alt | default: collection.title | escape }}" loading="lazy" width="{{ collection.image.width }}" height="{{ collection.image.height }}">{% elsif collection.products.first.featured_image %}<img src="{{ collection.products.first.featured_image | image_url: width: 900 }}" alt="{{ collection.products.first.featured_image.alt | default: collection.title | escape }}" loading="lazy" width="{{ collection.products.first.featured_image.width }}" height="{{ collection.products.first.featured_image.height }}">{% endif %}</span><span class="ai-bros-tile-title-{{ ai_gen_id }}">{{ collection.title | escape }} <span aria-hidden="true">↗</span></span></a>{% endif %}{% endfor %}</div></section>{% endif %}
+
+  {% assign bestsellers = block.settings.best_sellers %}
+  {% if bestsellers != blank and bestsellers.products_count > 0 %}<section class="ai-bros-section-{{ ai_gen_id }}" aria-labelledby="ai-bros-best-title-{{ ai_gen_id }}"><h2 id="ai-bros-best-title-{{ ai_gen_id }}" class="ai-bros-section-heading-{{ ai_gen_id }}" data-reveal>{{ block.settings.best_heading | escape }}</h2><div class="ai-bros-rule-{{ ai_gen_id }}"></div><div class="ai-bros-product-grid-{{ ai_gen_id }}">{% for product in bestsellers.products limit: 4 %}<a class="ai-bros-product-card-{{ ai_gen_id }}" href="{{ product.url }}" aria-label="{{ product.title | escape }} — {{ product.price | money }}"><span class="ai-bros-product-image-{{ ai_gen_id }}">{% if product.featured_image %}<img class="ai-bros-primary-{{ ai_gen_id }}" src="{{ product.featured_image | image_url: width: 700 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}">{% endif %}{% if product.images.size > 1 %}<img class="ai-bros-secondary-{{ ai_gen_id }}" src="{{ product.images[1] | image_url: width: 700 }}" alt="{{ product.images[1].alt | default: product.title | escape }}" loading="lazy" width="{{ product.images[1].width }}" height="{{ product.images[1].height }}">{% endif %}</span><span class="ai-bros-product-name-{{ ai_gen_id }}">{{ product.title | escape }}</span><span class="ai-bros-price-{{ ai_gen_id }}">{{ product.price | money }}</span></a>{% endfor %}</div></section>{% endif %}
+
+  {% if block.settings.editorial_image != blank or block.settings.editorial_heading != blank or block.settings.editorial_copy != blank %}<section class="ai-bros-section-{{ ai_gen_id }} ai-bros-section--soft-{{ ai_gen_id }}"><div class="ai-bros-editorial-{{ ai_gen_id }}">{% if block.settings.editorial_image != blank %}<div class="ai-bros-editorial-image-{{ ai_gen_id }}" data-reveal><img src="{{ block.settings.editorial_image | image_url: width: 1200 }}" alt="{{ block.settings.editorial_image.alt | escape }}" loading="lazy" width="{{ block.settings.editorial_image.width }}" height="{{ block.settings.editorial_image.height }}"></div>{% endif %}<div class="ai-bros-editorial-copy-{{ ai_gen_id }}" data-reveal><p class="ai-bros-kicker-{{ ai_gen_id }}" style="color:{{ block.settings.burgundy_color }}">{{ block.settings.editorial_kicker | escape }}</p><h2 class="ai-bros-section-heading-{{ ai_gen_id }}">{{ block.settings.editorial_heading | escape }}</h2><p>{{ block.settings.editorial_copy | escape }}</p>{% if block.settings.editorial_link != blank %}<a class="ai-bros-button-{{ ai_gen_id }}" href="{{ block.settings.editorial_link }}">{{ block.settings.editorial_button | escape }} <span aria-hidden="true">→</span></a>{% endif %}</div></div></section>{% endif %}
+
+  {% assign outfits = block.settings.outfits_collection %}
+  {% if outfits != blank and outfits.products_count > 0 %}<section class="ai-bros-section-{{ ai_gen_id }}" aria-labelledby="ai-bros-outfits-title-{{ ai_gen_id }}"><h2 id="ai-bros-outfits-title-{{ ai_gen_id }}" class="ai-bros-section-heading-{{ ai_gen_id }}" data-reveal>{{ block.settings.outfits_heading | escape }}</h2><div class="ai-bros-rule-{{ ai_gen_id }}"></div><div class="ai-bros-product-grid-{{ ai_gen_id }}">{% for product in outfits.products limit: 4 %}<a class="ai-bros-product-card-{{ ai_gen_id }}" href="{{ product.url }}" aria-label="{{ product.title | escape }} — {{ product.price | money }}"><span class="ai-bros-product-image-{{ ai_gen_id }}">{% if product.featured_image %}<img class="ai-bros-primary-{{ ai_gen_id }}" src="{{ product.featured_image | image_url: width: 700 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}">{% endif %}{% if product.images.size > 1 %}<img class="ai-bros-secondary-{{ ai_gen_id }}" src="{{ product.images[1] | image_url: width: 700 }}" alt="{{ product.images[1].alt | default: product.title | escape }}" loading="lazy" width="{{ product.images[1].width }}" height="{{ product.images[1].height }}">{% endif %}</span><span class="ai-bros-product-name-{{ ai_gen_id }}">{{ product.title | escape }}</span><span class="ai-bros-price-{{ ai_gen_id }}">{{ product.price | money }}</span></a>{% endfor %}</div></section>{% endif %}
+
+  {% if block.settings.show_jewellery %}<section class="ai-bros-teaser-{{ ai_gen_id }}"><h2>{{ block.settings.jewellery_heading | escape }}</h2><p>{{ block.settings.jewellery_copy | escape }}</p></section>{% endif %}
+  {% if block.settings.whatsapp_number != blank %}{% assign wa_number = block.settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')' %}<a class="ai-bros-whatsapp-{{ ai_gen_id }}" href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener noreferrer" aria-label="Chat with Bros Collection on WhatsApp">WA</a>{% endif %}
+</bro-boutique-{{ ai_gen_id }}>
+
+<script>
+(function(){
+  const tag='bro-boutique-{{ ai_gen_id }}';
+  if(customElements.get(tag)) return;
+  class BrosBoutique{{ ai_gen_id }} extends HTMLElement {
+    connectedCallback(){
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      this.classList.add('ai-bros-motion-{{ ai_gen_id }}');
+      const nodes=this.querySelectorAll('[data-reveal]');
+      if(!('IntersectionObserver' in window)){nodes.forEach(node=>node.classList.add('is-visible'));return;}
+      const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}),{threshold:.12});
+      nodes.forEach(node=>observer.observe(node));
+    }
+  }
+  customElements.define(tag,BrosBoutique{{ ai_gen_id }});
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Bros boutique home",
+  "settings": [
+    {"type":"range","id":"desktop_width_percent","label":"Desktop width","min":50,"max":100,"step":5,"unit":"%","default":100},
+    {"type":"header","content":"Hero"},
+    {"type":"image_picker","id":"hero_image","label":"Hero photograph"},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"BROS COLLECTION"},
+    {"type":"text","id":"hero_heading","label":"Headline","default":"YOUR STYLE. YOUR STORY. YOUR SPARKLE."},
+    {"type":"text","id":"hero_subtitle","label":"Subtitle","default":"Beautiful pieces for every mood and every moment"},
+    {"type":"text","id":"hero_button","label":"Button label","default":"DISCOVER YOUR NEXT LOOK"},
+    {"type":"url","id":"hero_link","label":"Button destination"},
+    {"type":"header","content":"New arrivals"},
+    {"type":"text","id":"arrivals_heading","label":"Heading","default":"New Arrivals"},
+    {"type":"collection","id":"new_arrivals","label":"Collection"},
+    {"type":"header","content":"Shop by category"},
+    {"type":"text","id":"category_heading","label":"Heading","default":"Shop by Category"},
+    {"type":"collection_list","id":"category_collections","label":"Collections","limit":3},
+    {"type":"header","content":"Best sellers"},
+    {"type":"text","id":"best_heading","label":"Heading","default":"Best Sellers"},
+    {"type":"collection","id":"best_sellers","label":"Collection"},
+    {"type":"header","content":"Fashion editorial"},
+    {"type":"image_picker","id":"editorial_image","label":"Editorial photograph"},
+    {"type":"text","id":"editorial_kicker","label":"Eyebrow","default":"A NOTE FROM BROS COLLECTION"},
+    {"type":"text","id":"editorial_heading","label":"Heading","default":"Fashion Editorial"},
+    {"type":"textarea","id":"editorial_copy","label":"Story","default":"Style is the art of making every moment your own. Discover pieces chosen to help you feel beautifully, confidently you."},
+    {"type":"text","id":"editorial_button","label":"Button label","default":"EXPLORE THE EDIT"},
+    {"type":"url","id":"editorial_link","label":"Button destination"},
+    {"type":"header","content":"Dresses and outfits"},
+    {"type":"text","id":"outfits_heading","label":"Heading","default":"Dresses & Outfits"},
+    {"type":"collection","id":"outfits_collection","label":"Collection"},
+    {"type":"header","content":"Jewellery teaser"},
+    {"type":"checkbox","id":"show_jewellery","label":"Show teaser","default":true},
+    {"type":"text","id":"jewellery_heading","label":"Heading","default":"Jewellery & Accessories — Coming soon"},
+    {"type":"textarea","id":"jewellery_copy","label":"Description","default":"A little something to look forward to: necklaces, rings, chains and bracelets, arriving soon."},
+    {"type":"header","content":"Contact and colors"},
+    {"type":"text","id":"whatsapp_number","label":"WhatsApp number with country code"},
+    {"type":"color","id":"blush_color","label":"Cherry blossom","default":"#F4A6C1"},
+    {"type":"color","id":"dusty_rose_color","label":"Dusty rose","default":"#D98DA7"},
+    {"type":"color","id":"burgundy_color","label":"Burgundy","default":"#702F49"},
+    {"type":"color","id":"plum_color","label":"Plum","default":"#45243F"},
+    {"type":"color","id":"peach_color","label":"Peach","default":"#FFC9B5"},
+    {"type":"color","id":"lavender_color","label":"Lavender","default":"#D9C8EE"},
+    {"type":"color","id":"gold_color","label":"Champagne gold","default":"#D6B36A"},
+    {"type":"color","id":"ivory_color","label":"Creamy ivory","default":"#FFF5EF"},
+    {"type":"color","id":"page_color","label":"Section background","default":"#FFF5EF"},
+    {"type":"color","id":"text_color","label":"Body text","default":"#45243F"}
+  ],
+  "presets": [{"name":"Bros boutique home"}],
+  "tag": null,
+  "class": "bros-boutique-home"
+}
+{% endschema %}

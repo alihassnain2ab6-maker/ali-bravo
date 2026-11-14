@@ -1,0 +1,143 @@
+{% doc %}
+  @prompt
+    Create a homepage-only entrance animation for 2bros collection. When a customer opens the homepage, show a brief, elegant pop-in burst of sparkling stars across the entire visible page, including over the header and homepage content, not confined to the block or section containing it. Use a transparent full-screen effect without a popup message or background that hides the store. Play once on each homepage visit for about 2 seconds, then fade out completely. Do not loop, block taps, prevent scrolling, shift the layout, or affect other pages. Make it lightweight and responsive on mobile and desktop, and respect reduced-motion accessibility preferences by disabling the animation. Include settings to enable or disable the effect and adjust sparkle color, density, and duration. The hosting block should take up no visible space.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-home-sparkle-host-{{ ai_gen_id }} {
+    display: block;
+    width: 0;
+    height: 0;
+    overflow: visible;
+  }
+  .ai-home-sparkle-layer-{{ ai_gen_id }} {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+  }
+  .ai-home-sparkle-{{ ai_gen_id }} {
+    position: absolute;
+    left: var(--sparkle-x);
+    top: var(--sparkle-y);
+    width: var(--sparkle-size);
+    height: var(--sparkle-size);
+    color: {{ block.settings.sparkle_color }};
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.15) rotate(-35deg);
+    animation: ai-home-sparkle-burst-{{ ai_gen_id }} {{ block.settings.duration_seconds }}s cubic-bezier(.16,.8,.3,1) var(--sparkle-delay) both;
+  }
+  .ai-home-sparkle-{{ ai_gen_id }} svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+  @keyframes ai-home-sparkle-burst-{{ ai_gen_id }} {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.15) rotate(-35deg); }
+    18% { opacity: .95; transform: translate(-50%, -50%) scale(1.12) rotate(0); }
+    48% { opacity: .8; transform: translate(-50%, -50%) scale(.88) rotate(12deg); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(35deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ai-home-sparkle-layer-{{ ai_gen_id }} { display: none !important; }
+  }
+{% endstyle %}
+
+{% if request.page_type == 'index' and block.settings.enabled %}
+  <home-sparkle-{{ ai_gen_id }} class="ai-home-sparkle-host-{{ ai_gen_id }}" data-density="{{ block.settings.sparkle_density }}" data-duration="{{ block.settings.duration_seconds }}" {{ block.shopify_attributes }}></home-sparkle-{{ ai_gen_id }}>
+    <template>
+      <div class="ai-home-sparkle-layer-{{ ai_gen_id }}" aria-hidden="true" role="presentation"></div>
+    </template>
+  </home-sparkle-{{ ai_gen_id }}>
+  <script>
+    (function() {
+      const tagName = 'home-sparkle-{{ ai_gen_id }}';
+      if (customElements.get(tagName)) return;
+      class HomeSparkle{{ ai_gen_id }} extends HTMLElement {
+        connectedCallback() {
+          if (this.started || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          this.started = true;
+          const storageKey = 'ai-home-sparkle-{{ ai_gen_id }}-played';
+          try {
+            if (sessionStorage.getItem(storageKey) === 'yes') return;
+            sessionStorage.setItem(storageKey, 'yes');
+          } catch (error) {}
+          const template = this.querySelector('template');
+          if (!template) return;
+          const layer = template.content.firstElementChild.cloneNode(true);
+          const count = Number(this.dataset.density) || 18;
+          const duration = Number(this.dataset.duration) || 2;
+          for (let i = 0; i < count; i += 1) {
+            const star = document.createElement('span');
+            star.className = 'ai-home-sparkle-{{ ai_gen_id }}';
+            star.style.setProperty('--sparkle-x', (4 + Math.random() * 92) + 'vw');
+            star.style.setProperty('--sparkle-y', (4 + Math.random() * 92) + 'vh');
+            star.style.setProperty('--sparkle-size', (8 + Math.random() * 14) + 'px');
+            star.style.setProperty('--sparkle-delay', (Math.random() * Math.min(.45, duration * .2)) + 's');
+            star.innerHTML = '<svg viewBox="0 0 24 24" focusable="false"><path d="M12 0.8 14.5 9.5 23.2 12l-8.7 2.5L12 23.2l-2.5-8.7L.8 12l8.7-2.5L12 .8Z"/></svg>';
+            layer.appendChild(star);
+          }
+          document.body.appendChild(layer);
+          window.setTimeout(() => layer.remove(), duration * 1000 + 800);
+        }
+      }
+      customElements.define(tagName, HomeSparkle{{ ai_gen_id }});
+    })();
+  </script>
+{% else %}
+  <span class="ai-home-sparkle-host-{{ ai_gen_id }}" {{ block.shopify_attributes }}></span>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Homepage sparkle burst",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable on homepage",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "sparkle_color",
+      "label": "Sparkle color",
+      "default": "#D8BB8A"
+    },
+    {
+      "type": "range",
+      "id": "sparkle_density",
+      "label": "Sparkle density",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "duration_seconds",
+      "label": "Duration",
+      "min": 1,
+      "max": 5,
+      "step": 0.5,
+      "unit": "s",
+      "default": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "Homepage sparkle burst"
+    }
+  ],
+  "tag": null,
+  "class": "homepage-sparkle-block"
+}
+{% endschema %}

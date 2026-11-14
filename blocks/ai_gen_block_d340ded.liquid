@@ -1,0 +1,126 @@
+{% doc %}
+  @prompt
+    Create a minimal homepage brand introduction for Two Bros Collection displaying the text '2broscollection'. When the homepage first opens, softly fade the text in once over about 900 milliseconds, accompanied by a few delicate warm-gold sparkles that disappear after the entrance. Keep the look elegant, cozy, romantic, and premium, with no continuous animation, sound, full-screen overlay, or delay to browsing. Use a transparent background and inherit the theme typography and text color. Make it responsive on mobile and desktop, respect reduced-motion preferences by displaying static text, and keep text visible if animation cannot run. Include settings for text, text size, alignment, sparkle color, and animation duration. This is a homepage block, not a replacement for or modification of the existing header logo. Avoid external animation libraries.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-brand-intro-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    position: relative;
+    padding: 30px 16px;
+    text-align: {{ block.settings.alignment }};
+    color: inherit;
+    font-family: inherit;
+  }
+  .ai-brand-intro-{{ ai_gen_id }}__inner { position: relative; display: inline-block; max-width: 100%; }
+  .ai-brand-intro-{{ ai_gen_id }}__text {
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: clamp(24px, {{ block.settings.text_size }}px, 9vw);
+    font-weight: inherit;
+    line-height: 1.12;
+    overflow-wrap: anywhere;
+  }
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle {
+    position: absolute;
+    z-index: 2;
+    width: 6px;
+    height: 6px;
+    pointer-events: none;
+    opacity: 0;
+    color: {{ block.settings.sparkle_color }};
+  }
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle::before,
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle::after {
+    content: '';
+    position: absolute;
+    display: block;
+    background: currentColor;
+    border-radius: 99px;
+  }
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle::before { width: 1px; height: 6px; left: 2.5px; top: 0; }
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle::after { width: 6px; height: 1px; left: 0; top: 2.5px; }
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle--one { top: -10px; left: 12%; }
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle--two { top: 16%; right: -16px; transform: scale(.7); }
+  .ai-brand-intro-{{ ai_gen_id }}__sparkle--three { bottom: -8px; left: 83%; transform: scale(.55); }
+  .ai-brand-intro-{{ ai_gen_id }}.is-entering .ai-brand-intro-{{ ai_gen_id }}__text {
+    animation: ai-brand-intro-fade-{{ ai_gen_id }} {{ block.settings.animation_duration }}ms ease-out both;
+  }
+  .ai-brand-intro-{{ ai_gen_id }}.is-entering .ai-brand-intro-{{ ai_gen_id }}__sparkle {
+    animation: ai-brand-intro-sparkle-{{ ai_gen_id }} {{ block.settings.animation_duration }}ms ease-out both;
+  }
+  .ai-brand-intro-{{ ai_gen_id }}.is-entering .ai-brand-intro-{{ ai_gen_id }}__sparkle--two { animation-delay: 100ms; }
+  .ai-brand-intro-{{ ai_gen_id }}.is-entering .ai-brand-intro-{{ ai_gen_id }}__sparkle--three { animation-delay: 180ms; }
+  @keyframes ai-brand-intro-fade-{{ ai_gen_id }} { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ai-brand-intro-sparkle-{{ ai_gen_id }} {
+    0% { opacity: 0; transform: scale(.35); }
+    35% { opacity: .8; }
+    100% { opacity: 0; transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ai-brand-intro-{{ ai_gen_id }}.is-entering .ai-brand-intro-{{ ai_gen_id }}__text,
+    .ai-brand-intro-{{ ai_gen_id }}.is-entering .ai-brand-intro-{{ ai_gen_id }}__sparkle { animation: none; }
+  }
+{% endstyle %}
+
+<brand-intro-{{ ai_gen_id }} class="ai-brand-intro-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-brand-intro-{{ ai_gen_id }}__inner">
+    <p class="ai-brand-intro-{{ ai_gen_id }}__text">{{ block.settings.brand_text | escape }}</p>
+    <span class="ai-brand-intro-{{ ai_gen_id }}__sparkle ai-brand-intro-{{ ai_gen_id }}__sparkle--one" aria-hidden="true"></span>
+    <span class="ai-brand-intro-{{ ai_gen_id }}__sparkle ai-brand-intro-{{ ai_gen_id }}__sparkle--two" aria-hidden="true"></span>
+    <span class="ai-brand-intro-{{ ai_gen_id }}__sparkle ai-brand-intro-{{ ai_gen_id }}__sparkle--three" aria-hidden="true"></span>
+  </div>
+</brand-intro-{{ ai_gen_id }}>
+
+<script>
+  (() => {
+    const tagName = 'brand-intro-{{ ai_gen_id }}';
+    if (customElements.get(tagName)) return;
+    class BrandIntro extends HTMLElement {
+      connectedCallback() {
+        if (this.dataset.started === 'true') return;
+        this.dataset.started = 'true';
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          requestAnimationFrame(() => this.classList.add('is-entering'));
+        }
+      }
+    }
+    customElements.define(tagName, BrandIntro);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Brand introduction",
+  "settings": [
+    { "type": "text", "id": "brand_text", "label": "Text", "default": "2broscollection" },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 24, "max": 72, "step": 4, "unit": "px", "default": 48 },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    { "type": "color", "id": "sparkle_color", "label": "Sparkle color", "default": "#D8BB8A" },
+    { "type": "range", "id": "animation_duration", "label": "Animation duration", "min": 500, "max": 1500, "step": 100, "unit": "ms", "default": 900 },
+    { "type": "range", "id": "desktop_width_percent", "label": "Desktop width", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 100 }
+  ],
+  "presets": [
+    { "name": "Brand introduction" }
+  ],
+  "tag": null,
+  "class": "brand-introduction-block"
+}
+{% endschema %}

@@ -1,0 +1,143 @@
+{% doc %}
+  @prompt
+    Create a homepage heading block for 2broscollection with the exact text “Fall in love with your next look”. Animate the heading sliding in from the left to its final position with a subtle fade when it first enters view. Use a smooth 700ms motion, run once, and respect reduced-motion preferences by displaying the text without animation. Match the existing homepage heading typography, color, alignment and spacing as closely as possible. Keep it responsive without horizontal overflow on mobile. Include editable heading text and animation duration. This block is intended to replace the existing heading, not duplicate it; leave the surrounding homepage content unchanged.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-heading-block-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    overflow: clip;
+    color: {{ settings.page_text_color }};
+    text-align: {{ block.settings.alignment }};
+  }
+
+  .ai-heading-block-{{ ai_gen_id }}__heading {
+    margin: 0;
+    color: inherit;
+    font-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    font-weight: {{ settings.type_heading_font.weight }};
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+    opacity: 1;
+    transform: none;
+  }
+
+  .ai-heading-block-{{ ai_gen_id }}.is-pending .ai-heading-block-{{ ai_gen_id }}__heading {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+
+  .ai-heading-block-{{ ai_gen_id }}.is-visible .ai-heading-block-{{ ai_gen_id }}__heading {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity {{ block.settings.duration }}ms ease, transform {{ block.settings.duration }}ms ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ai-heading-block-{{ ai_gen_id }}.is-pending .ai-heading-block-{{ ai_gen_id }}__heading,
+    .ai-heading-block-{{ ai_gen_id }}.is-visible .ai-heading-block-{{ ai_gen_id }}__heading {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+{% endstyle %}
+
+<animated-heading-{{ ai_gen_id }}
+  class="ai-heading-block-{{ ai_gen_id }}"
+  style="width: {{ block.settings.desktop_width_percent }}%;"
+  {{ block.shopify_attributes }}
+>
+  <h2 class="ai-heading-block-{{ ai_gen_id }}__heading">{{ block.settings.heading | escape }}</h2>
+</animated-heading-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    const tagName = 'animated-heading-{{ ai_gen_id }}';
+    if (customElements.get(tagName)) return;
+
+    class AnimatedHeading extends HTMLElement {
+      connectedCallback() {
+        const heading = this.querySelector('.ai-heading-block-{{ ai_gen_id }}__heading');
+        if (!heading || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        this.classList.add('is-pending');
+        if (!('IntersectionObserver' in window)) {
+          this.classList.add('is-visible');
+          return;
+        }
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.classList.add('is-visible');
+              this.classList.remove('is-pending');
+              this.observer.disconnect();
+            }
+          });
+        }, { threshold: 0.15 });
+        this.observer.observe(this);
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+      }
+    }
+
+    customElements.define(tagName, AnimatedHeading);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Animated heading",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading text",
+      "default": "Fall in love with your next look"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "Animation duration",
+      "min": 300,
+      "max": 1200,
+      "step": 100,
+      "unit": "ms",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Animated heading"
+    }
+  ],
+  "tag": null,
+  "class": "animated-heading-block"
+}
+{% endschema %}

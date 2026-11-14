@@ -1,0 +1,132 @@
+{% doc %}
+  @prompt
+    Create an animated version of the current section, preserving its content and visual style. Use a subtle fade-in with a gentle upward movement when the section enters view. Keep the animation smooth and understated, make it work well on mobile, and respect reduced-motion preferences.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-section-reveal-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-section-reveal-{{ ai_gen_id }}__content {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ai-section-reveal-{{ ai_gen_id }}.is-pending .ai-section-reveal-{{ ai_gen_id }}__content {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  .ai-section-reveal-{{ ai_gen_id }}__content.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 650ms ease, transform 650ms ease;
+  }
+
+  .ai-section-reveal-{{ ai_gen_id }}__content p:first-child {
+    margin-top: 0;
+  }
+
+  .ai-section-reveal-{{ ai_gen_id }}__content p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 749px) {
+    .ai-section-reveal-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-section-reveal-{{ ai_gen_id }}.is-pending .ai-section-reveal-{{ ai_gen_id }}__content {
+      transform: translateY(12px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ai-section-reveal-{{ ai_gen_id }}.is-pending .ai-section-reveal-{{ ai_gen_id }}__content,
+    .ai-section-reveal-{{ ai_gen_id }}__content.is-visible {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+{% endstyle %}
+
+<ai-section-reveal-{{ ai_gen_id }} class="ai-section-reveal-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-section-reveal-{{ ai_gen_id }}__content">
+    {{ block.settings.content }}
+  </div>
+</ai-section-reveal-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    const tagName = 'ai-section-reveal-{{ ai_gen_id }}';
+    if (customElements.get(tagName)) return;
+
+    class AiSectionReveal extends HTMLElement {
+      connectedCallback() {
+        this.content = this.querySelector('.ai-section-reveal-{{ ai_gen_id }}__content');
+        if (!this.content || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+
+        this.classList.add('is-pending');
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.content.classList.add('is-visible');
+              this.classList.remove('is-pending');
+              this.observer.unobserve(this);
+            }
+          });
+        }, { threshold: 0.12 });
+        this.observer.observe(this);
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+      }
+    }
+
+    customElements.define(tagName, AiSectionReveal);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Section fade-in",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Section content",
+      "default": "<p>Add the content you want to reveal as it enters view.</p>"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#682c46"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Section fade-in"
+    }
+  ],
+  "tag": null,
+  "class": "section-fade-in-block"
+}
+{% endschema %}

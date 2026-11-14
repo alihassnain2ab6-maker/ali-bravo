@@ -1,0 +1,82 @@
+{% doc %}
+  @prompt
+    Create an invisible animation controller for the homepage, with no visible content or extra spacing. When a customer opens the homepage, animate the entire homepage together, including header, main content, and footer, with one simple gentle fade-up entrance: fade from transparent to fully visible while moving upward approximately 16px over 600ms. Do not animate only this block, individual sections, or elements on scroll. Run once on initial homepage load, not repeatedly. Leave other pages unchanged. Preserve the existing layout and all interactions, avoid leaving content hidden if loading fails, and respect reduced-motion preferences by displaying the page immediately without animation.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-home-entrance-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html.ai-home-entrance-enabled-{{ ai_gen_id }} body {
+      animation: ai-home-entrance-rise-{{ ai_gen_id }} 600ms ease-out both;
+    }
+
+    @keyframes ai-home-entrance-rise-{{ ai_gen_id }} {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  }
+{% endstyle %}
+
+<home-entrance-controller-{{ ai_gen_id }}
+  class="ai-home-entrance-{{ ai_gen_id }}"
+  aria-hidden="true"
+  style="width: {{ block.settings.desktop_width_percent }}%;"
+  {{ block.shopify_attributes }}
+></home-entrance-controller-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    const tagName = 'home-entrance-controller-{{ ai_gen_id }}';
+    if (customElements.get(tagName)) return;
+
+    class HomeEntranceController extends HTMLElement {
+      connectedCallback() {
+        if (window.location.pathname !== '/' || window.Shopify && Shopify.designMode) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (window.sessionStorage.getItem('ai-home-entrance-played')) return;
+
+        try {
+          window.sessionStorage.setItem('ai-home-entrance-played', 'true');
+          document.documentElement.classList.add('ai-home-entrance-enabled-{{ ai_gen_id }}');
+        } catch (error) {
+          document.documentElement.classList.add('ai-home-entrance-enabled-{{ ai_gen_id }}');
+        }
+      }
+    }
+
+    customElements.define(tagName, HomeEntranceController);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Homepage fade-up",
+  "settings": [
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Homepage fade-up"
+    }
+  ],
+  "tag": null,
+  "class": "homepage-fade-up-controller"
+}
+{% endschema %}
